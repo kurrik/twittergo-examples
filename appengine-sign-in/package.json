@@ -1,0 +1,9 @@
+{
+  "name": "twittergo-example",
+  "description": "A sign-in example!",
+  "version": "1.0.0",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-bg-shell": "~2.0.1"
+  }
+}

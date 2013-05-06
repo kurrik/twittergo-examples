@@ -1,0 +1,3 @@
+[submodule "appengine-sign-in/github.com/kurrik/twittergo"]
+	path = appengine-sign-in/github.com/kurrik/twittergo
+	url = git://github.com/kurrik/twittergo.git
