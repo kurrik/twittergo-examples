@@ -4,10 +4,10 @@ module.exports = function(grunt) {
 
     bgShell: {
       serve: {
-        cmd: 'pkill -f dev_appserver || ' +
+        cmd: 'pkill -f dev_appserver; ' +
              '~/src/google_appengine_go/dev_appserver.py ' +
-             '--port=9996 --address=0.0.0.0 .',
-        bg: false,
+             '--port=9996 --address=0.0.0.0 src',
+        bg: true,
       },
     },
   });
