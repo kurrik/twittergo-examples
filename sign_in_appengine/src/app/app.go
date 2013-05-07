@@ -14,6 +14,57 @@
 
 package app
 
+import (
+	"fmt"
+	"github.com/kurrik/oauth1a"
+	"net/http"
+)
+
+var (
+	settings *Settings
+	service  *oauth1a.Service
+	sessions map[string]*oauth1a.UserConfig
+)
+
+func NewSessionID() string {
+	c := 128
+	b := make([]byte, c)
+	n, err := io.ReadFull(rand.Reader, b)
+	if n != len(b) || err != nil {
+		panic("Could not generate random number")
+	}
+	return base64.URLEncoding.EncodeToString(b)
+}
+
+func GetSessionID(req *http.Request) (id string, err error) {
+	var c *http.Cookie
+	if c, err = req.Cookie("session_id"); err != nil {
+		return
+	}
+	id = c.Value
+	return
+}
+
+func SessionStartCookie(id string) *http.Cookie {
+	return &http.Cookie{
+		Name:   "session_id",
+		Value:  id,
+		MaxAge: 60,
+		Secure: false,
+		Path:   "/",
+	}
+}
+
+func SessionEndCookie() *http.Cookie {
+	return &http.Cookie{
+		Name:   "session_id",
+		Value:  "",
+		MaxAge: 0,
+		Secure: false,
+		Path:   "/",
+	}
+}
+
 func BaseHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "text/html;charset=utf-8")
 	fmt.Fprintf(rw, "<a href=\"/signin\">Sign in</a>")

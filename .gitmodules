@@ -1,0 +1,6 @@
+[submodule "lib/twittergo"]
+	path = lib/twittergo
+	url = git://github.com/kurrik/twittergo
+[submodule "lib/oauth1a"]
+	path = lib/oauth1a
+	url = git://github.com/kurrik/oauth1a
