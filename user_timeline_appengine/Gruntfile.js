@@ -7,7 +7,7 @@ module.exports = function(grunt) {
         cmd: 'pkill -f dev_appserver; ' +
              '~/src/google_appengine_go/dev_appserver.py ' +
              '--port=9996 --address=0.0.0.0 src',
-        bg: true,
+        bg: false,
       },
     },
   });

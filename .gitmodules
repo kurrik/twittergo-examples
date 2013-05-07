@@ -4,3 +4,6 @@
 [submodule "lib/oauth1a"]
 	path = lib/oauth1a
 	url = git://github.com/kurrik/oauth1a
+[submodule "lib/json"]
+	path = lib/json
+	url = git://github.com/kurrik/json
