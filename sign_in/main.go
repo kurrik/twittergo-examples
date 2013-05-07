@@ -1,11 +1,11 @@
 package main
 
 import (
-	".." // Use "github.com/kurrik/oauth1a" in your code
 	"crypto/rand"
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"github.com/kurrik/oauth1a"
 	"io"
 	"log"
 	"net/http"
