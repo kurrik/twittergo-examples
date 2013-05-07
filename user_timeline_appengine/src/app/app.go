@@ -50,6 +50,18 @@ const ADMIN_TEMPLATE = `
   </body>
 </html>`
 
+const NOT_CONFIGURED_TEMPLATE = `
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>
+      This example is not configured.  Sign in as an admin
+      <a href="/admin">here</a> and input your Twitter app
+      credentials.
+    </p>
+  </body>
+</html>`
+
 type Credentials struct {
 	ConsumerKey    string
 	ConsumerSecret string
@@ -77,6 +89,10 @@ func GetTwitterClient(ctx appengine.Context) (c *twittergo.Client, err error) {
 		user   *oauth1a.UserConfig
 	)
 	if cred, err = LoadCredentials(ctx); err != nil {
+		return
+	}
+	if cred.ConsumerKey == "" || cred.ConsumerSecret == "" {
+		err = fmt.Errorf("Blank consumer secret and/or key")
 		return
 	}
 	config = &oauth1a.ClientConfig{
@@ -163,14 +179,14 @@ func RequestHandler(w http.ResponseWriter, r *http.Request) {
 	)
 	ctx = appengine.NewContext(r)
 	if client, err = GetTwitterClient(ctx); err != nil {
-		fmt.Fprint(w, "Client not configured, set up at <a href='/admin'>admin</a>")
+		RenderTemplate(w, NOT_CONFIGURED_TEMPLATE, nil)
 		return
 	}
 	if tl, err = GetTimeline(client); err != nil {
-		fmt.Fprintf(w, "Couldn't fetch timeline: %v", err)
+		http.Error(w, fmt.Sprintf("Couldn't fetch timeline: %v", err), 500)
 		return
 	}
-	fmt.Fprint(w, "Timeline: %v", tl)
+	fmt.Fprintf(w, "Timeline: %v", tl)
 }
 
 func init() {
