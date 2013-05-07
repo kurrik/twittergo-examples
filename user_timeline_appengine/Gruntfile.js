@@ -9,8 +9,13 @@ module.exports = function(grunt) {
              '--port=9996 --address=0.0.0.0 src',
         bg: false,
       },
+      deploy: {
+        cmd: '~/src/google_appengine_go/appcfg.py --oauth2 update src',
+        bg: false,
+      },
     },
   });
   grunt.loadNpmTasks('grunt-bg-shell');
   grunt.registerTask('develop', ['bgShell:serve']);
+  grunt.registerTask('deploy', ['bgShell:deploy']);
 };
