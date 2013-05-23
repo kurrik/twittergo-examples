@@ -71,7 +71,17 @@ func main() {
 	tweet = &twittergo.Tweet{}
 	err = resp.Parse(tweet)
 	if err != nil {
-		fmt.Printf("Problem parsing response: %v\n", err)
+		if rle, ok := err.(twittergo.RateLimitError); ok {
+			fmt.Printf("Rate limited, reset at %v\n", rle.Reset)
+		} else if errs, ok := err.(twittergo.Errors); ok {
+			for i, val := range errs.Errors() {
+				fmt.Printf("Error #%v - ", i + 1)
+				fmt.Printf("Code: %v ", val.Code())
+				fmt.Printf("Msg: %v\n", val.Message())
+			}
+		} else {
+			fmt.Printf("Problem parsing response: %v\n", err)
+		}
 		os.Exit(1)
 	}
 	fmt.Printf("ID:                   %v\n", tweet.Id())
