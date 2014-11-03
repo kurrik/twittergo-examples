@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/kurrik/oauth1a"
 	"github.com/kurrik/twittergo"
+	"github.com/kurrik/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -172,9 +173,22 @@ func filterStream(client *twittergo.Client, path string, query url.Values) (err 
 
 	done := make(chan bool)
 	stream := make(chan []byte, 1000)
+	go func() {
+		for data := range stream {
+			tweet := &twittergo.Tweet{}
+			err := json.Unmarshal(data, tweet)
+			if (err == nil) {
+					fmt.Printf("ID:                   %v\n", tweet.Id())
+					fmt.Printf("User:                   %v\n", tweet.User().ScreenName())
+					fmt.Printf("Tweet:                %v\n", tweet.Text())
+
+			}
+		}		
+	}()
+
 	readStream(client, sc, path, query, resp, func(line []byte) {
-		stream <- line
-		fmt.Println(line)}, done)
+		stream <- line}, done)
+
 
 	return
 }
