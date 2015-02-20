@@ -5,9 +5,9 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"github.com/kurrik/json"
 	"github.com/kurrik/oauth1a"
 	"github.com/kurrik/twittergo"
-	"github.com/kurrik/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -44,12 +44,12 @@ func parseArgs() *Args {
 }
 
 type streamConn struct {
-	client   *http.Client
-	resp     *http.Response
-	url      *url.URL
-	stale    bool
-	closed   bool
-	mu       sync.Mutex
+	client *http.Client
+	resp   *http.Response
+	url    *url.URL
+	stale  bool
+	closed bool
+	mu     sync.Mutex
 	// wait time before trying to reconnect, this will be
 	// exponentially moved up until reaching maxWait, when
 	// it will exit
@@ -61,8 +61,6 @@ type streamConn struct {
 func NewStreamConn(max int) streamConn {
 	return streamConn{wait: 1, maxWait: max}
 }
-
-//type StreamHandler func([]byte)
 
 func (conn *streamConn) Close() {
 	// Just mark the connection as stale, and let the connect() handler close after a read
@@ -82,8 +80,8 @@ func (conn *streamConn) isStale() bool {
 	return r
 }
 
-func readStream(client *twittergo.Client, sc streamConn, path string, query url.Values, 
-				resp *twittergo.APIResponse, handler func([]byte), done chan bool) {
+func readStream(client *twittergo.Client, sc streamConn, path string, query url.Values,
+	resp *twittergo.APIResponse, handler func([]byte), done chan bool) {
 
 	var reader *bufio.Reader
 	reader = bufio.NewReader(resp.Body)
@@ -132,8 +130,6 @@ func readStream(client *twittergo.Client, sc streamConn, path string, query url.
 			sc.wait = 1
 		}
 		line = bytes.TrimSpace(line)
-		fmt.Println("Received a line ")
-
 		if len(line) == 0 {
 			continue
 		}
@@ -143,10 +139,9 @@ func readStream(client *twittergo.Client, sc streamConn, path string, query url.
 
 func Connect(client *twittergo.Client, path string, query url.Values) (resp *twittergo.APIResponse, err error) {
 	var (
-		req 	*http.Request
+		req *http.Request
 	)
-
-	url := fmt.Sprintf("%v?%v", path, query.Encode())
+	url := fmt.Sprintf("https://stream.twitter.com%v?%v", path, query.Encode())
 	req, err = http.NewRequest("GET", url, nil)
 	if err != nil {
 		err = fmt.Errorf("Could not parse request: %v\n", err)
@@ -157,18 +152,15 @@ func Connect(client *twittergo.Client, path string, query url.Values) (resp *twi
 		err = fmt.Errorf("Could not send request: %v\n", err)
 		return
 	}
-
-	fmt.Printf("resp.StatusCode=%d\n", resp.StatusCode)
 	return
 }
 
 func filterStream(client *twittergo.Client, path string, query url.Values) (err error) {
 	var (
-		resp    *twittergo.APIResponse
+		resp *twittergo.APIResponse
 	)
 
 	sc := NewStreamConn(300)
-
 	resp, err = Connect(client, path, query)
 
 	done := make(chan bool)
@@ -177,18 +169,18 @@ func filterStream(client *twittergo.Client, path string, query url.Values) (err 
 		for data := range stream {
 			tweet := &twittergo.Tweet{}
 			err := json.Unmarshal(data, tweet)
-			if (err == nil) {
-					fmt.Printf("ID:                   %v\n", tweet.Id())
-					fmt.Printf("User:                   %v\n", tweet.User().ScreenName())
-					fmt.Printf("Tweet:                %v\n", tweet.Text())
+			if err == nil {
+				fmt.Printf("ID:     %v\n", tweet.Id())
+				fmt.Printf("User:   %v\n", tweet.User().ScreenName())
+				fmt.Printf("Tweet:  %v\n", tweet.Text())
 
 			}
-		}		
+		}
 	}()
 
 	readStream(client, sc, path, query, resp, func(line []byte) {
-		stream <- line}, done)
-
+		stream <- line
+	}, done)
 
 	return
 }
@@ -214,5 +206,4 @@ func main() {
 		fmt.Println("Error: %v\n", err)
 	}
 	fmt.Printf("\n\n")
-
 }
