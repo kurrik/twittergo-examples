@@ -2,3 +2,4 @@ node_modules
 CREDENTIALS
 CREDENTIALS.*
 *.log
+.DS_Store
