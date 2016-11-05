@@ -1,4 +1,4 @@
-// Copyright 2012 Arne Roomann-Kurrik
+// Copyright 2016 Arne Roomann-Kurrik
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,44 +20,6 @@ package main
 //
 // This example respects rate limiting and will wait until the rate limit
 // reset time to finish pulling a timeline.
-//
-// Example non-rate-limited call:
-//   $ go run examples/user_timeline/main.go -screen_name=kurrik
-//   Got 100 Tweets, 39 calls available.
-//   Got 100 Tweets, 38 calls available.
-//   Got 100 Tweets, 37 calls available.
-//   Got 100 Tweets, 36 calls available.
-//   Got 100 Tweets, 35 calls available.
-//   Got 100 Tweets, 34 calls available.
-//   Got 100 Tweets, 33 calls available.
-//   Got 99 Tweets, 32 calls available.
-//   Got 100 Tweets, 31 calls available.
-//   Got 100 Tweets, 30 calls available.
-//   Got 100 Tweets, 29 calls available.
-//   Got 100 Tweets, 28 calls available.
-//   Got 100 Tweets, 27 calls available.
-//   Got 99 Tweets, 26 calls available.
-//   Got 100 Tweets.
-//   Got 100 Tweets, 24 calls available.
-//   Got 99 Tweets, 23 calls available.
-//   Got 99 Tweets, 22 calls available.
-//   Got 100 Tweets, 21 calls available.
-//   Got 100 Tweets, 20 calls available.
-//   Got 98 Tweets, 19 calls available.
-//   Got 100 Tweets, 18 calls available.
-//   Got 100 Tweets, 17 calls available.
-//   Got 100 Tweets, 16 calls available.
-//   Got 100 Tweets, 15 calls available.
-//   Got 100 Tweets, 14 calls available.
-//   Got 100 Tweets, 13 calls available.
-//   Got 100 Tweets, 12 calls available.
-//   Got 100 Tweets, 11 calls available.
-//   Got 100 Tweets, 10 calls available.
-//   Got 42 Tweets, 9 calls available.
-//   No more results, end of timeline.
-//   --------------------------------------------------------
-//   Wrote 3036 Tweets to user_timeline.json
-//
 
 import (
 	"encoding/json"
