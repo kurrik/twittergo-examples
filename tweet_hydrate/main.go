@@ -167,7 +167,7 @@ func main() {
 			out.Write([]byte("\n"))
 			total += 1
 		}
-		fmt.Printf("Got %v Tweets", batch)
+		fmt.Printf("Got %v Tweets, %v total", batch, total)
 		if resp.HasRateLimit() {
 			fmt.Printf(", %v calls available", resp.RateLimitRemaining())
 		}
