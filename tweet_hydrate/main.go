@@ -52,7 +52,7 @@ type Args struct {
 
 func parseArgs() *Args {
 	a := &Args{}
-	flag.StringVar(&a.ScreenName, "in", "tweet_ids.tsv", "Input file")
+	flag.StringVar(&a.InputFile, "in", "tweet_ids.tsv", "Input file")
 	flag.StringVar(&a.OutputFile, "out", "hydrated.tsv", "Output file")
 	flag.Parse()
 	return a
@@ -60,30 +60,41 @@ func parseArgs() *Args {
 
 func getIds(scanner *bufio.Scanner, count int) (out string, err error) {
 	buff := make([]string, 0, count)
+	total := 0
 	for scanner.Scan() {
 		buff = append(buff, scanner.Text())
+		total++
+		if total >= count {
+			break
+		}
 	}
 	if err = scanner.Err(); err != nil {
 		return
 	}
-	out = strings.Join(buff, "\n")
+	out = strings.Join(buff, ",")
 	return
+}
+
+type TweetMap map[string]twittergo.Tweet
+type TweetMapMap struct {
+	Id TweetMap
 }
 
 func main() {
 	var (
-		err     error
-		client  *twittergo.Client
-		req     *http.Request
-		resp    *twittergo.APIResponse
-		args    *Args
-		ids     string
-		out     *os.File
-		in      *os.File
-		query   url.Values
-		results *twittergo.Timeline
-		text    []byte
-		scanner *bufio.Scanner
+		err      error
+		client   *twittergo.Client
+		req      *http.Request
+		resp     *twittergo.APIResponse
+		args     *Args
+		ids      string
+		out      *os.File
+		in       *os.File
+		query    url.Values
+		results  TweetMapMap
+		text     []byte
+		scanner  *bufio.Scanner
+		endpoint string
 	)
 	args = parseArgs()
 	if client, err = LoadCredentials(); err != nil {
@@ -115,7 +126,8 @@ func main() {
 			fmt.Printf("Problem reading IDs: %v\n", err)
 			os.Exit(1)
 		}
-		endpoint := fmt.Sprintf(urltmpl, query.Encode())
+		query.Set("id", ids)
+		endpoint = fmt.Sprintf(urltmpl, query.Encode())
 		if req, err = http.NewRequest("GET", endpoint, nil); err != nil {
 			fmt.Printf("Could not parse request: %v\n", err)
 			os.Exit(1)
@@ -124,8 +136,8 @@ func main() {
 			fmt.Printf("Could not send request: %v\n", err)
 			os.Exit(1)
 		}
-		results = &twittergo.Timeline{}
-		if err = resp.Parse(results); err != nil {
+		results = TweetMapMap{}
+		if err = resp.Parse(&results); err != nil {
 			if rle, ok := err.(twittergo.RateLimitError); ok {
 				dur := rle.Reset.Sub(time.Now()) + time.Second
 				if dur < minwait {
@@ -140,16 +152,17 @@ func main() {
 				fmt.Printf("Problem parsing response: %v\n", err)
 			}
 		}
-		batch := len(*results)
+		batch := len(results.Id)
 		if batch == 0 {
-			fmt.Printf("No more results, end of timeline.\n")
+			fmt.Printf("No more results, end of list.\n")
 			break
 		}
-		for _, tweet := range *results {
+		for id, tweet := range results.Id {
 			if text, err = json.Marshal(tweet); err != nil {
 				fmt.Printf("Could not encode Tweet: %v\n", err)
 				os.Exit(1)
 			}
+			out.Write([]byte(fmt.Sprintf("%v\t", id)))
 			out.Write(text)
 			out.Write([]byte("\n"))
 			total += 1
