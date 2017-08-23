@@ -18,8 +18,11 @@ Then add a file called
     <Twitter access token>
     <Twitter access token secret>
 
-Note that some examples (like `tweet`) actually write to
-the API, so use a testing account!
+Note: As the examples are written, the end of line char in the CREDENTIALS file
+must be in UNIX format (LF and not CR+LF) otherwise the authentication fails.
+
+Some examples (like `tweet`) actually write to the API, so use a testing
+account!
 
 To run an example:
 
