@@ -5,12 +5,12 @@ module.exports = function(grunt) {
     bgShell: {
       serve: {
         cmd: 'pkill -f dev_appserver; ' +
-             '~/src/google_appengine_go/dev_appserver.py ' +
-             '--port=9996 --address=0.0.0.0 src',
+             '~/src/go_appengine/dev_appserver.py ' +
+             '--port=9996 src',
         bg: false,
       },
       deploy: {
-        cmd: '~/src/google_appengine_go/appcfg.py --oauth2 update src',
+        cmd: '~/src/go_appengine/appcfg.py --oauth2 update src',
         bg: false,
       },
     },
