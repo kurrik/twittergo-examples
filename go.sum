@@ -1,0 +1,8 @@
+github.com/codingneo/twittergo v0.0.0-20141112134736-a0faef95004b h1:CQnqJe+UzeD4OITyqx+Va7ZLmMb6MNGzqcPkxDLGHTc=
+github.com/codingneo/twittergo v0.0.0-20141112134736-a0faef95004b/go.mod h1:/Of3KeJ1OfSvHXmBEtiT2a7+RuMTCQffdcWgdzX6dAo=
+github.com/kurrik/json v0.0.0-20160508230744-6b510c293ed2 h1:0ogPNX3Frq86R9om/+VNy9xaEcznoNWWA1oMm/gxPNg=
+github.com/kurrik/json v0.0.0-20160508230744-6b510c293ed2/go.mod h1:ZhjzzmPSR5Cle8U2t0IVStjrBO05O7rrQ6e6xryCez4=
+github.com/kurrik/oauth1a v0.1.1 h1:3myAVza5bCMnyW/0gcVtQUeYaqcMKmniNxOIm0ESjek=
+github.com/kurrik/oauth1a v0.1.1/go.mod h1:2lmEMbW1BVM6RfQ6aN+b7kQSegGdXU4XeVfHKm4qxM0=
+github.com/kurrik/twittergo v0.0.0-20201111073046-3e2792781fcf h1:b14A8Ukt9rp5f/vIC4VV4xSad0pwm/khV+11SLLrcvI=
+github.com/kurrik/twittergo v0.0.0-20201111073046-3e2792781fcf/go.mod h1:8LXjN6yItBbjlBtxMRLCfWK46yaoqRignovBZnyTiQ4=
