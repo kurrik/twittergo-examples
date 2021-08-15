@@ -17,14 +17,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/kurrik/oauth1a"
-	"github.com/kurrik/twittergo"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/kurrik/oauth1a"
+	"github.com/kurrik/twittergo"
 )
 
 const MINWAIT = time.Duration(10) * time.Second
